@@ -1,0 +1,108 @@
+import socket
+import json
+import threading
+import requests
+
+HOST = "0.0.0.0"
+PORT = 6000
+
+# 🔹 Configuración del modelo / Open WebUI
+API_KEY = "TU_API_KEY_DE_OPEN_WEBUI"
+API_URL = "http://url:3000/api/chat/completions"  # Cambia 'url' por la IP o dominio de tu servidor
+MODELO = "qwen3-coder:30b"
+
+servidores = [("127.0.0.1", 7001), ("127.0.0.1", 7002)]
+indice = 0
+lock = threading.Lock()
+
+# 🔹 IA conectada a tu API personalizada
+def decision_ia(data):
+    print("gateway data")
+    print(data)
+    try:
+        prompt = f"Clasifica este dato como CRITICO o NORMAL: {data}"
+
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": MODELO,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "stream": False
+        }
+
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+
+        resultado = response.json()
+        texto = resultado["choices"][0]["message"]["content"]
+
+        if "CRITICO" in texto.upper():
+            return 0
+        return 1
+
+    except Exception as e:
+        print(f"[IA] Error ({e}), usando Round Robin")
+        return None
+
+
+def enviar(destino, data):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(destino)
+        s.send(json.dumps(data).encode())
+        s.close()
+
+        print("[GATEWAY] Enviado a", destino)
+    except Exception as e:
+        print("[ERROR GATEWAY]", e)
+
+
+def manejar_cliente(conn, addr):
+    global indice
+
+    data = conn.recv(1024)
+
+    if data:
+        decoded = json.loads(data.decode())
+
+        # 🔥 DECISIÓN IA
+        idx = decision_ia(decoded)
+
+        if idx is None:
+            # fallback → Round Robin
+            with lock:
+                idx = indice
+                indice = (indice + 1) % len(servidores)
+
+        destino = servidores[idx]
+
+        print("[GATEWAY] Cliente", addr, "→", destino)
+
+        enviar(destino, decoded)
+
+    conn.close()
+
+
+def gateway():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    s.listen()
+
+    print("[GATEWAY] activo...")
+
+    while True:
+        conn, addr = s.accept()
+        thread = threading.Thread(target=manejar_cliente, args=(conn, addr))
+        thread.start()
+
+
+if __name__ == "__main__":
+    gateway()
