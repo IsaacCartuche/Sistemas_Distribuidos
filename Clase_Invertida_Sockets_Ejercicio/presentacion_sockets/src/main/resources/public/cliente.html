@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cliente Socket</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --server-color: #2ea043;
+            --client-color: #58a6ff;
+            --error-color: #f85149;
+        }
+        body {
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color); color: var(--text-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; text-align: center; padding: 20px; box-sizing: border-box;
+        }
+        
+        .card {
+            background-color: #161b22; border: 1px solid #30363d;
+            border-radius: 12px; padding: 30px; width: 100%; max-width: 350px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        #status-icon {
+            font-size: 48px; margin-bottom: 15px;
+        }
+
+        h2 { margin: 0 0 10px 0; font-size: 22px; color: #fff; }
+        p { margin: 0; color: #8b949e; font-size: 15px; line-height: 1.5; }
+
+        /* Área de Acción (Fase 3) */
+        #action-area {
+            margin-top: 25px; display: none; /* Oculto por defecto */
+        }
+        
+        button {
+            background-color: var(--client-color); color: #000;
+            border: none; padding: 15px 30px; border-radius: 8px;
+            font-size: 18px; font-weight: bold; width: 100%;
+            cursor: pointer; transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
+        }
+        button:active { transform: scale(0.95); }
+        
+        #server-reply {
+            margin-top: 15px; font-weight: bold; color: var(--server-color);
+            min-height: 20px; font-family: monospace; font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="main-card">
+        <div id="status-icon">⏳</div>
+        <h2 id="status-title">Conectando...</h2>
+        <p id="status-desc">Iniciando protocolo de red local.</p>
+
+        <div id="action-area">
+            <button id="btn-ping" onclick="enviarDatos()">Enviar PING</button>
+            <div id="server-reply"></div>
+        </div>
+    </div>
+
+    <script>
+        // Conexión al WebSocket
+        const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const ws = new WebSocket(`${wsProtocol}//${window.location.host}/ws/cliente`);
+
+        const icon = document.getElementById('status-icon');
+        const title = document.getElementById('status-title');
+        const desc = document.getElementById('status-desc');
+        const actionArea = document.getElementById('action-area');
+        const serverReply = document.getElementById('server-reply');
+        const card = document.getElementById('main-card');
+
+        // Escuchar mensajes del servidor (Tu laptop)
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.tipo === "cambio_fase") {
+                actualizarInterfazFase(data.fase);
+            } else if (data.tipo === "respuesta_servidor") {
+                mostrarRespuesta(data.payload);
+            }
+        };
+
+        ws.onclose = () => {
+            actualizarInterfazFase(4); // Forzar estado de cierre si se cae la red
+        };
+
+        // Enviar paquete de datos en Fase 3
+        function enviarDatos() {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ accion: "enviar_datos", payload: "Ping" }));
+                serverReply.innerText = "Enviando...";
+                serverReply.style.color = "#8b949e";
+                
+                // Efecto visual en el botón
+                if(navigator.vibrate) navigator.vibrate(50);
+            }
+        }
+
+        // Mostrar el "Pong" del servidor
+        function mostrarRespuesta(mensaje) {
+            serverReply.innerText = `[Servidor dice]: ${mensaje}`;
+            serverReply.style.color = "var(--server-color)";
+            if(navigator.vibrate) navigator.vibrate([30, 50, 30]); // Doble vibración
+        }
+
+        // La magia de la presentación: El teléfono reacciona a tus clics
+        function actualizarInterfazFase(fase) {
+            actionArea.style.display = 'none'; // Ocultar botón por defecto
+            serverReply.innerText = '';
+            card.style.borderColor = '#30363d';
+
+            switch (fase) {
+                case 1:
+                    icon.innerText = "📡";
+                    title.innerText = "Buscando ruta...";
+                    desc.innerText = "El servidor está en modo 'Listen'. Tu conexión aún no ha sido aceptada.";
+                    break;
+                case 2:
+                    icon.innerText = "🤝";
+                    title.innerText = "¡Conectado!";
+                    desc.innerText = "Three-Way Handshake exitoso. Tienes un socket dedicado ('Accept'). Esperando apertura de Streams.";
+                    card.style.borderColor = "var(--server-color)";
+                    break;
+                case 3:
+                    icon.innerText = "⚡";
+                    title.innerText = "Flujo de Datos";
+                    desc.innerText = "Canal Full-Duplex abierto. Ya puedes enviar paquetes de bytes.";
+                    actionArea.style.display = 'block'; // Mostrar botón PING
+                    break;
+                case 4:
+                    icon.innerText = "🛑";
+                    title.innerText = "Conexión Cerrada";
+                    desc.innerText = "El servidor ha liberado los recursos ('Close'). El socket fue destruido.";
+                    card.style.borderColor = "var(--error-color)";
+                    if (ws.readyState === WebSocket.OPEN) ws.close(); // Cerrar conexión real
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
