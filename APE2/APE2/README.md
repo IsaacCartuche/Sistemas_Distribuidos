@@ -52,7 +52,7 @@ APE2/APE2/
 ## Ejecución con Docker (recomendado)
 
 ```bash
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE2/APE2
+cd ~/APE2/APE2
 
 # Construir y levantar ambos contenedores
 docker compose up --build -d servidor
@@ -89,7 +89,7 @@ docker compose exec servidor cat /comunicacion/salida_servidor.txt
 ## Ejecución local (sin Docker)
 
 ```bash
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE2/APE2
+cd ~/APE2/APE2
 
 # Terminal 1: Servidor
 mkdir -p archivos_comunicacion
