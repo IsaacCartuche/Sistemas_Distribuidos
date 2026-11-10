@@ -3,10 +3,11 @@ import pika
 import paho.mqtt.client as mqtt
 import os
 
-# CONFIGURACIÓN (Usa variables de entorno, por defecto localhost)
-MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")
-MQTT_PORT = 1883
-RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
+# CONFIGURACIÓN (Usa variables de entorno, por defecto servicio Docker)
+MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")
+MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
+RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "rabbitmq")
+RABBITMQ_PORT = int(os.getenv("RABBITMQ_PORT", "5672"))
 RABBITMQ_USER = os.getenv("RABBITMQ_USERNAME", "admin")
 RABBITMQ_PASS = os.getenv("RABBITMQ_PASSWORD", "admin123")
 

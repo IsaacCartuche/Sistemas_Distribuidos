@@ -3,10 +3,11 @@ import time
 import random
 from datetime import datetime
 import paho.mqtt.client as mqtt
+import os
 
 # CONFIGURACIÓN MQTT
-BROKER = "localhost"
-PORT = 1883
+BROKER = os.getenv("MQTT_BROKER", "mosquitto")
+PORT = int(os.getenv("MQTT_PORT", "1883"))
 VEHICULOS = ["VH-001", "VH-002", "VH-003"]
 
 def al_conectar(client, userdata, flags, rc, properties=None):

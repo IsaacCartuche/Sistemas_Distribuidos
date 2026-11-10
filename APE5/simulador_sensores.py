@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 
 # CONFIGURACIÓN MQTT
 BROKER = "localhost"
-PORT = 1883
+PORT = 1884
 VEHICULOS = ["VH-001", "VH-002", "VH-003"]
 
 def al_conectar(client, userdata, flags, rc, properties=None):

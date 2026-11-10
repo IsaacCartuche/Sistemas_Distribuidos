@@ -3,43 +3,54 @@ version: '3.8'
 services:
   mosquitto:
     image: eclipse-mosquitto:2.0
-    container_name: mosquitto_broker
-    network_mode: host
+    container_name: ape6-mosquitto
+    ports:
+      - "1885:1883"
+      - "9003:9001"
     volumes:
       - ./infra/mosquitto/config:/mosquitto/config
       - ./infra/mosquitto/data:/mosquitto/data
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq_broker
-    network_mode: host
+    container_name: ape6-rabbitmq
+    ports:
+      - "5674:5672"
+      - "15674:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin123
+    restart: unless-stopped
 
   fleet-monitor:
     build:
       context: ./services/spring-boot/fleet-monitor
       dockerfile: Dockerfile
-    container_name: fleet_monitor
-    network_mode: host
+    container_name: ape6-fleet-monitor
+    ports:
+      - "8081:8080"
     environment:
-      - RABBITMQ_HOST=localhost
+      - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=admin
-      - RABBITMQ_PASSWORD=***
+      - RABBITMQ_PASSWORD=admin123
     depends_on:
       - rabbitmq
+    restart: unless-stopped
 
   bridge:
     build:
       context: ./services/python
       dockerfile: Dockerfile.bridge
-    container_name: mqtt_rabbitmq_bridge
-    network_mode: host
+    container_name: ape6-mqtt_rabbitmq_bridge
+    ports:
+      - "8082:8080"
     environment:
-      - MQTT_BROKER=localhost
-      - RABBITMQ_HOST=localhost
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=admin
       - RABBITMQ_PASSWORD=admin123
     depends_on:
@@ -51,9 +62,10 @@ services:
     build:
       context: ./services/python
       dockerfile: Dockerfile.simulador
-    container_name: simulador_sensores
-    network_mode: host
+    container_name: ape6-simulador_sensores
     environment:
-      - MQTT_BROKER=localhost
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
     depends_on:
       - mosquitto
+    restart: unless-stopped

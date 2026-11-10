@@ -5,7 +5,7 @@ import paho.mqtt.client as mqtt
 
 # CONFIGURACIÓN MQTT
 BROKER = "localhost"
-PORT = 1883
+PORT = 1884
 DB_NAME = "telemetria.db"
 
 def inicializar_base_datos():

@@ -4,12 +4,16 @@ import paho.mqtt.client as mqtt
 
 # CONFIGURACIÓN
 MQTT_BROKER = "localhost"
-MQTT_PORT = 1883
+MQTT_PORT = 1884
 RABBITMQ_HOST = "localhost"
+RABBITMQ_PORT = 5673
+RABBITMQ_USER = "guest"
+RABBITMQ_PASS = "guest"
 
 def configurar_rabbitmq():
     """Establece conexión con RabbitMQ y declara las 3 colas duraderas."""
-    conexion = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
+    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
+    conexion = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST, port=RABBITMQ_PORT, credentials=credentials))
     canal = conexion.channel()
     
     # Declaración de colas durables

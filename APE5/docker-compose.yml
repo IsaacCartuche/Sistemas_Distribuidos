@@ -3,10 +3,10 @@ version: '3.8'
 services:
   mosquitto:
     image: eclipse-mosquitto:2.0
-    container_name: mosquitto_broker
+    container_name: ape5-mosquitto
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - "1884:1883"
+      - "9002:9001"
     volumes:
       - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data
@@ -14,8 +14,11 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq_broker
+    container_name: ape5-rabbitmq
     ports:
-      - "5672:5672"     # Puerto de comunicación AMQP (Python / Pika)
-      - "15672:15672"   # Panel de administración Web
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     restart: unless-stopped

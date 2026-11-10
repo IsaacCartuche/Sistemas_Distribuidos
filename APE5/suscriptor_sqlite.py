@@ -3,9 +3,9 @@ import sqlite3
 from datetime import datetime
 import paho.mqtt.client as mqtt
 
-# CONFIGURACIÓN
+# CONFIGURACIÓN MQTT
 BROKER = "localhost"
-PORT = 1883
+PORT = 1884
 DB_NAME = "telemetria.db"
 
 def inicializar_base_datos():
