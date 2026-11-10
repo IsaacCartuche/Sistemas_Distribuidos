@@ -1,0 +1,17 @@
+# Mosquitto runtime database (owned by Docker container UID)
+APE5/mosquitto/data/mosquitto.db
+
+# Docker / container artifacts
+*.db
+*.log
+*.pid
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
