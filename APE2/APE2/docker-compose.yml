@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  servidor:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    container_name: ape2-servidor
+    volumes:
+      - comunicacion:/comunicacion
+    restart: unless-stopped
+    networks:
+      - ape2-network
+
+  cliente:
+    build:
+      context: .
+      dockerfile: Dockerfile.cliente
+    container_name: ape2-cliente
+    volumes:
+      - comunicacion:/comunicacion
+    stdin_open: true
+    tty: true
+    depends_on:
+      - servidor
+    networks:
+      - ape2-network
+
+volumes:
+  comunicacion:
+    driver: local
+
+networks:
+  ape2-network:
+    driver: bridge

@@ -1,8 +1,9 @@
 import time
 
-# Ruta hacia la carpeta compartida externa al proyecto
-RUTA_ENTRADA = '../archivos_comunicacion/entrada_servidor.txt'
-RUTA_SALIDA = '../archivos_comunicacion/salida_servidor.txt'
+# Ruta hacia la carpeta compartida (Docker volume / host)
+import os
+RUTA_ENTRADA = os.getenv('RUTA_ENTRADA', '/comunicacion/entrada_servidor.txt')
+RUTA_SALIDA = os.getenv('RUTA_SALIDA', '/comunicacion/salida_servidor.txt')
 
 def iniciar_cliente():
     while True:

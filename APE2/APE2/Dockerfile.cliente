@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY Cliente/cliente.py .
+
+# Create communication directory
+RUN mkdir -p /comunicacion
+
+ENV RUTA_ENTRADA=/comunicacion/entrada_servidor.txt
+ENV RUTA_SALIDA=/comunicacion/salida_servidor.txt
+
+# Client needs stdin for interactive input
+CMD ["python", "cliente.py"]
