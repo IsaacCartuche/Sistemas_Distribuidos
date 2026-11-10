@@ -59,7 +59,7 @@ APE5/
 ## Despliegue
 
 ```bash
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE5
+cd ~/APE5
 
 # 1. Levantar brokers
 docker compose up -d
@@ -144,13 +144,13 @@ conn.close()
 
 ---
 
-## Estado: ✅ COMPLETO
+## Estado: COMPLETO
 
 Todos los entregables de la **Parte 1 (Capa IoT)** implementados y funcionales:
 - Broker MQTT (Mosquitto Docker)
 - Simulador sensores (3 vehículos × 3 sensores)
 - Suscriptor + SQLite + alertas
 - Puente MQTT → RabbitMQ (3 colas, filtrado alertas)
-- Documentación (este README)
+- Documentación
 
-> **Nota:** La guía menciona "Parte 2: Microservicios Spring Boot consumiendo RabbitMQ" como extensión futura. Esta implementación cubre completamente la Parte 1 solicitada.
+> **Nota:** Este avance cumple únicamente la parte 1 del proyecto, la parte 2 corresponde al APE 6.
