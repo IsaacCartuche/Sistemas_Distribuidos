@@ -109,7 +109,7 @@ APE6/
 ## Despliegue completo
 
 ```bash
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE6
+cd ~/APE6
 
 # Levantar toda la pila (infra + servicios)
 docker compose up --build -d
@@ -254,9 +254,3 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 | Documentación (README) | ✅ | Este archivo |
 
 ---
-
-## Próximos pasos (si aplica)
-- Agregar consumidor para `cola.notificaciones` (email, push, webhook)
-- Implementar autenticación JWT en REST API
-- Métricas Prometheus + Grafana
-- Tests de integración (Testcontainers)
