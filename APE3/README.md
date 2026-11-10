@@ -69,19 +69,19 @@ Cada ejercicio tiene su propio `docker-compose.yml` independiente:
 
 ```bash
 # Ejercicio 1: Estacionamiento
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE3/EJERCICIO1 && docker compose up --build
+cd ~/APE3/EJERCICIO1 && docker compose up --build
 
 # Ejercicio 2: Cajero
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE3/ejercicio2 && docker compose up --build
+cd ~/APE3/ejercicio2 && docker compose up --build
 
 # Ejercicio 3: Productor-Consumidor
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE3/EJERCICIO3 && docker compose up --build
+cd ~/APE3/EJERCICIO3 && docker compose up --build
 
 # Ejercicio 4: Puente
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE3/Ejercicio4 && docker compose up --build
+cd ~/APE3/Ejercicio4 && docker compose up --build
 
 # Ejercicio 5: Impresión
-cd /home/isaac/Documents/Sistemas_Distribuidos/APE3/ejercicio5 && docker compose up --build
+cd ~/APE3/ejercicio5 && docker compose up --build
 ```
 
 **Puertos típicos:**
@@ -92,12 +92,11 @@ cd /home/isaac/Documents/Sistemas_Distribuidos/APE3/ejercicio5 && docker compose
 
 ## Estado de implementación
 
-| Ejercicio | Backend (Spring Boot) | Frontend | Docker Compose | README |
-|-----------|----------------------|----------|----------------|--------|
-| 1. Estacionamiento | ✅ `Semaphore(4)` fair | ✅ React/Vite | ✅ | 📝 **Crear** |
-| 2. Cajero | ✅ `ReentrantLock` | ✅ HTML/JS | ✅ | 📝 **Crear** |
-| 3. Productor-Consumidor | ✅ BufferAcotado (Sem+Mutex) | ✅ HTML | ✅ | 📝 **Crear** |
-| 4. Puente | ✅ `ReentrantLock` + `Condition` + fairness | ✅ React | ✅ | ✅ **Completo** |
-| 5. Impresión | ✅ 3 Semáforos (1,0,0) | ✅ HTML/JS | ✅ | 📝 **Crear** |
+| Ejercicio | Backend (Spring Boot) | Frontend | Docker Compose |
+|-----------|----------------------|----------|----------------|
+| 1. Estacionamiento | ✅ `Semaphore(4)` fair | ✅ React/Vite | ✅ |
+| 2. Cajero | ✅ `ReentrantLock` | ✅ HTML/JS | ✅ |
+| 3. Productor-Consumidor | ✅ BufferAcotado (Sem+Mutex) | ✅ HTML | ✅ |
+| 4. Puente | ✅ `ReentrantLock` + `Condition` + fairness | ✅ React | ✅ |
+| 5. Impresión | ✅ 3 Semáforos (1,0,0) | ✅ HTML/JS | ✅ |
 
-> **Nota:** El ejercicio 4 ya tiene `README.md` completo. Los demás necesitan documentación.
